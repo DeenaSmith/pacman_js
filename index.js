@@ -47,14 +47,7 @@ class Player {
 }
 
 
-// Symbols for map layout
-const map = [
-    ['-', '-', '-', '-', '-', '-'], 
-    ['-', '', '', '', '', '-'],
-    ['-', '', '-', '-', '', '-'],
-    ['-', '', '', '', '', '-'],
-    ['-', '-', '-', '-', '-', '-']
-]
+
 
 
 
@@ -69,6 +62,34 @@ const player = new Player({
         y: 0
     }
 })
+
+
+
+const keys = {
+    w: {
+        pressed: false
+    },
+    a: {
+        pressed: false
+    },
+    s: {
+        pressed: false
+    },
+    d: {
+        pressed: false
+    }
+}
+
+
+
+// Symbols for map layout
+const map = [
+    ['-', '-', '-', '-', '-', '-'], 
+    ['-', '', '', '', '', '-'],
+    ['-', '', '-', '-', '', '-'],
+    ['-', '', '', '', '', '-'],
+    ['-', '-', '-', '-', '-', '-']
+]
 
 
 
@@ -93,6 +114,7 @@ map.forEach((row, i) => {
 
 function animate() {
     requestAnimationFrame(animate)
+    c.clearRect(0, 0, canvas.width, canvas.height)
     boundaries.forEach((boundary) => {
         boundary.draw()
     })
@@ -128,4 +150,25 @@ window.addEventListener('keydown', ({key}) => {
     }
 
     console.log(player.velocity)
-})
+});
+
+
+window.addEventListener('keyup', ({key}) => {
+    
+    switch(key) {
+        case 'w':
+            player.velocity.y = 0
+            break
+        case 'a':
+            player.velocity.x = 0
+            break
+        case 's':
+            player.velocity.y = 0
+            break
+        case 'd':
+            player.velocity.x = 0
+            break
+    }
+
+    console.log(player.velocity)
+});
