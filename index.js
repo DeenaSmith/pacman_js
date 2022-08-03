@@ -81,6 +81,8 @@ const keys = {
 }
 
 
+let lastKey = '';
+
 
 // Symbols for map layout
 const map = [
@@ -119,6 +121,19 @@ function animate() {
         boundary.draw()
     })
     player.update();
+
+    player.velocity.x = 0
+    player.velocity.y = 0
+
+    if (keys.w.pressed && lastKey === 'w') {
+        player.velocity.y = -5
+    } else if (keys.a.pressed && lastKey === 'a') {
+        player.velocity.x = -5
+    } else if (keys.s.pressed && lastKey === 's') {
+        player.velocity.y = 5
+    } else if (keys.d.pressed && lastKey === 'd') {
+        player.velocity.x = 5
+    }
 };
 
 animate();
@@ -136,20 +151,26 @@ window.addEventListener('keydown', ({key}) => {
     
     switch(key) {
         case 'w':
+            keys.w.pressed = true
             player.velocity.y = -5
+            lastKey = 'w'
             break
         case 'a':
+            keys.a.pressed = true
             player.velocity.x = -5
+            lastKey = 'a'
             break
         case 's':
+            keys.s.pressed = true
             player.velocity.y = 5
+            lastKey = 's'
             break
         case 'd':
+            keys.d.pressed = true
             player.velocity.x = 5
+            lastKey = 'd'
             break
     }
-
-    console.log(player.velocity)
 });
 
 
@@ -157,18 +178,19 @@ window.addEventListener('keyup', ({key}) => {
     
     switch(key) {
         case 'w':
-            player.velocity.y = 0
+            keys.w.pressed = false
             break
         case 'a':
-            player.velocity.x = 0
+            keys.a.pressed = false
             break
         case 's':
-            player.velocity.y = 0
+            keys.s.pressed = false
             break
         case 'd':
-            player.velocity.x = 0
+            keys.d.pressed = false
             break
     }
 
-    console.log(player.velocity)
+    console.log(keys.d.pressed)
+    console.log(keys.s.pressed)
 });
