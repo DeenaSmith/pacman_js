@@ -20,20 +20,35 @@ class Boundary {
 }
 
 
+const map = [
+    ['-', '-', '-', '-', '-', '-'], 
+    ['-', '', '', '', '', '-'],
+    ['-', '', '', '', '', '-'],
+    ['-', '-', '-', '-', '-', '-']
+]
+
+
 const boundaries = [
-    new Boundary ({
-        position: {
-            x: 0,
-            y: 0
-        }
-    }),
-    new Boundary ({
-        position: {
-            x: 41,
-            y: 0
+    
+]
+
+
+map.forEach((row, i) => {
+    row.forEach((symbol, j) => {
+        switch (symbol) {
+            case '-':
+                boundaries.push(
+                    new Boundary({
+                        position: {
+                            x: 40 * j,
+                            y: 40 * i
+                        }
+                    })
+                )
+                break;
         }
     })
-]
+})
 
 
 boundaries.forEach(boundary => {
