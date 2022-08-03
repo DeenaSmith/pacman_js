@@ -6,7 +6,11 @@ console.log(c);
 canvas.width = innerWidth;
 canvas.height = innerHeight;
 
+
+// Creates the basis for boundary positioning
 class Boundary {
+    static width = 40;
+    static height = 40;
     constructor({position}) {
         this.position = position;
         this.width = 40;
@@ -20,19 +24,55 @@ class Boundary {
 }
 
 
+class Player {
+    constructor({ position, velocity }) {
+        this.position = position;
+        this.velocity = velocity;
+        this.radius = 15;
+    }
+
+    draw() {
+        c.beginPath()
+        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+        c.fillStyle = 'yellow';
+        c.fill();
+        c.closePath();
+    }
+
+    update() {
+        this.draw()
+        this.position.x += this.velocity.x;
+        this.position.y += this.velocity.y;
+    }
+}
+
+
+// Symbols for map layout
 const map = [
     ['-', '-', '-', '-', '-', '-'], 
     ['-', '', '', '', '', '-'],
+    ['-', '', '-', '-', '', '-'],
     ['-', '', '', '', '', '-'],
     ['-', '-', '-', '-', '-', '-']
 ]
 
 
-const boundaries = [
-    
-]
+
+const boundaries = []
+const player = new Player({
+    position: {
+        x: Boundary.width + Boundary.width / 2,
+        y: Boundary.height + Boundary.height / 2
+    },
+    velocity: {
+        x: 0,
+        y: 0
+    }
+})
 
 
+
+// Loops through the array, creating the boundaries
 map.forEach((row, i) => {
     row.forEach((symbol, j) => {
         switch (symbol) {
@@ -40,8 +80,8 @@ map.forEach((row, i) => {
                 boundaries.push(
                     new Boundary({
                         position: {
-                            x: 40 * j,
-                            y: 40 * i
+                            x: Boundary.width * j,
+                            y: Boundary.height * i
                         }
                     })
                 )
@@ -51,6 +91,41 @@ map.forEach((row, i) => {
 })
 
 
+function animate() {
+    requestAnimationFrame(animate)
+    boundaries.forEach((boundary) => {
+        boundary.draw()
+    })
+    player.update();
+};
+
+animate();
+
+
+// Calls the function so the map displays
 boundaries.forEach(boundary => {
     boundary.draw()
 });
+
+
+player.update();
+
+window.addEventListener('keydown', ({key}) => {
+    
+    switch(key) {
+        case 'w':
+            player.velocity.y = -5
+            break
+        case 'a':
+            player.velocity.x = -5
+            break
+        case 's':
+            player.velocity.y = 5
+            break
+        case 'd':
+            player.velocity.x = 5
+            break
+    }
+
+    console.log(player.velocity)
+})
