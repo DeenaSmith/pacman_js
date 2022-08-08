@@ -346,11 +346,12 @@ function circleCollidesWithRectangle({
 }
 
 
-
+// Animates pacman and pellets
 function animate() {
     requestAnimationFrame(animate)
     c.clearRect(0, 0, canvas.width, canvas.height)
 
+    // W/up key
     if (keys.w.pressed && lastKey === 'w') {
         for (let i = 0; i < boundaries.length; i++) {
             const boundary = boundaries[i]
@@ -372,6 +373,7 @@ function animate() {
             }
         }
 
+    // A/left key
     } else if (keys.a.pressed && lastKey === 'a') {
         for (let i = 0; i < boundaries.length; i++) {
             const boundary = boundaries[i]
@@ -393,6 +395,7 @@ function animate() {
             }
         }
 
+    // S/down key
     } else if (keys.s.pressed && lastKey === 's') {
         for (let i = 0; i < boundaries.length; i++) {
             const boundary = boundaries[i]
@@ -414,6 +417,7 @@ function animate() {
             }
         }
 
+    // D/right key
     } else if (keys.d.pressed && lastKey === 'd') {
         for (let i = 0; i < boundaries.length; i++) {
             const boundary = boundaries[i]
@@ -437,9 +441,21 @@ function animate() {
     }
 
 
-    pellets.forEach((pellet) => {
+    // backwards loop to prevent flashing rendering issues for pellets
+    for (let i = pellets.length - 1; 0 < i; i--) {
+        const pellet = pellets[i]
+
         pellet.draw()
-    })
+
+        if(Math.hypot(pellet.position.x - player.position.x, 
+            pellet.position.y - player.position.y
+            ) < 
+            pellet.radius + player.radius
+            ) {
+                pellets.splice(i, 1)
+            }
+    }
+    
 
     boundaries.forEach((boundary) => {
         boundary.draw()
