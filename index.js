@@ -1,7 +1,8 @@
 
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
-console.log(c);
+
+const scoreEl = document.querySelector('#scoreEl')
 
 canvas.width = innerWidth;
 canvas.height = innerHeight;
@@ -99,6 +100,7 @@ const keys = {
 
 
 let lastKey = '';
+let score = 0
 
 
 // Symbols for map layout
@@ -453,6 +455,8 @@ function animate() {
             pellet.radius + player.radius
             ) {
                 pellets.splice(i, 1)
+                score += 10
+                scoreEl.innerHTML = score;
             }
     }
     
