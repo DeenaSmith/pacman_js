@@ -32,11 +32,14 @@ class Player {
         this.position = position;
         this.velocity = velocity;
         this.radius = 15;
+        this.radians = 0.75;
+        this.openRate = 0.12
     }
 
     draw() {
         c.beginPath()
-        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+        c.arc(this.position.x, this.position.y, this.radius, this.radians, Math.PI * 2 - this.radians)
+        c.lineTo(this.position.x, this.position.y);
         c.fillStyle = 'yellow';
         c.fill();
         c.closePath();
@@ -46,6 +49,10 @@ class Player {
         this.draw()
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
+
+        if (this.radians < 0 || this.radians > .75)
+            this.openRate = -this.openRate
+        this.radians += this.openRate
     }
 }
 
@@ -549,13 +556,22 @@ function animate() {
             if (ghost.scared) {
                 ghosts.splice(i, 1)
             } else {
-            cancelAnimationFrame(animationId)
-            console.log('You lose.')
+                cancelAnimationFrame(animationId)
+                console.log('You lose.')
             }
         }
     }
 
-//power up
+
+    // win condition, game stops and coneols logs 'you win'
+    if (pellets.length === 0) {
+        console.log('You win.')
+
+        cancelAnimationFrame(animationId)
+    }
+
+
+    //power up
     for (let i = powerUps.length - 1; 0 <= i; i--) {
         const powerUp = powerUps[i]
         powerUp.draw()
@@ -572,7 +588,7 @@ function animate() {
             // make ghosts scared
             ghosts.forEach(ghost => {
                 ghost.scared = true
-            
+
                 setTimeout(() => {
                     ghost.scared = false
                 }, 4000)
