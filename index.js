@@ -59,12 +59,13 @@ class Ghost {
         this.color = color;
         this.prevCollisions = []
         this.speed = 2
+        this.scared = false
     }
 
     draw() {
         c.beginPath()
         c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
-        c.fillStyle = this.color;
+        c.fillStyle = this.scared ? 'blue' : this.color;
         c.fill();
         c.closePath();
     }
@@ -74,7 +75,7 @@ class Ghost {
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
     }
-}
+};
 
 
 class Pellet {
@@ -90,14 +91,29 @@ class Pellet {
         c.fill();
         c.closePath();
     }
-}
+};
 
+
+
+class PowerUp {
+    constructor({ position }) {
+        this.position = position;
+        this.radius = 8;
+    }
+
+    draw() {
+        c.beginPath()
+        c.arc(this.position.x, this.position.y, this.radius, 0, Math.PI * 2);
+        c.fillStyle = 'white';
+        c.fill();
+        c.closePath();
+    }
+}
 
 
 const pellets = []
 const boundaries = []
-
-
+const powerUps = []
 const ghosts = [
     new Ghost({
         position: {
@@ -387,13 +403,23 @@ map.forEach((row, i) => {
                     })
                 )
                 break
+            case 'p':
+                powerUps.push(
+                    new PowerUp({
+                        position: {
+                            x: j * Boundary.width + Boundary.width / 2,
+                            y: i * Boundary.height + Boundary.height / 2
+                        }
+                    })
+                )
+                break
         }
     })
 });
 
 
 //detects boundaries for pacman and ghosts 
-function circleCollidesWithRectangle({circle, rectangle}) {
+function circleCollidesWithRectangle({ circle, rectangle }) {
     const padding = Boundary.width / 2 - circle.radius - 1
     return (
         circle.position.y - circle.radius + circle.velocity.y
@@ -509,14 +535,41 @@ function animate() {
     }
 
 
+//power up
+    for (let i = powerUps.length - 1; 0 <= i; i--) {
+        const powerUp = powerUps[i]
+        powerUp.draw()
+
+        // player collides with power up
+        if (Math.hypot(
+            powerUp.position.x - player.position.x,
+            powerUp.position.y - player.position.y
+        ) <
+            powerUp.radius + player.radius
+        ) {
+            powerUps.splice(i, 1)
+
+            // make ghosts scared
+            ghosts.forEach(ghost => {
+                ghost.scared = true
+            
+                setTimeout(() => {
+                    ghost.scared = false
+                }, 3000)
+            })
+        }
+    }
+
+
     // backwards loop prevents flashing rendering issues for pellets, 
     //pellets removed from map when pcaman moves over them
-    for (let i = pellets.length - 1; 0 < i; i--) {
+    for (let i = pellets.length - 1; 0 <= i; i--) {
         const pellet = pellets[i]
 
         pellet.draw()
 
-        if (Math.hypot(pellet.position.x - player.position.x,
+        if (Math.hypot(
+            pellet.position.x - player.position.x,
             pellet.position.y - player.position.y
         ) <
             pellet.radius + player.radius
