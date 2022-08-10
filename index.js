@@ -370,6 +370,7 @@ map.forEach((row, i) => {
 });
 
 
+//detects boundaries for pacman and ghosts 
 function circleCollidesWithRectangle({circle, rectangle}) {
     const padding = Boundary.width / 2 - circle.radius - 1
     return (
@@ -389,9 +390,11 @@ function circleCollidesWithRectangle({circle, rectangle}) {
 }
 
 
+
 // Animates pacman and pellets
+let animationId
 function animate() {
-    requestAnimationFrame(animate)
+    animationId = requestAnimationFrame(animate)
     c.clearRect(0, 0, canvas.width, canvas.height)
 
     // W/up key
@@ -520,6 +523,17 @@ function animate() {
 
     ghosts.forEach(ghost => {
         ghost.update()
+
+        //removes 
+        if (Math.hypot(
+            ghost.position.x - player.position.x,
+            ghost.position.y - player.position.y
+        ) <
+            ghost.radius + player.radius
+        ) {
+            cancelAnimationFrame(animationId)
+            console.log('You lose.')
+        }
 
         // Allows ghosts to recognize boundaries 
         const collisions = []
