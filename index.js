@@ -535,6 +535,26 @@ function animate() {
     }
 
 
+    //detects collosion between player and ghosts
+    for (let i = ghosts.length - 1; 0 <= i; i--) {
+        const ghost = ghosts[i]
+
+        // ghost touches player
+        if (Math.hypot(
+            ghost.position.x - player.position.x,
+            ghost.position.y - player.position.y
+        ) <
+            ghost.radius + player.radius
+        ) {
+            if (ghost.scared) {
+                ghosts.splice(i, 1)
+            } else {
+            cancelAnimationFrame(animationId)
+            console.log('You lose.')
+            }
+        }
+    }
+
 //power up
     for (let i = powerUps.length - 1; 0 <= i; i--) {
         const powerUp = powerUps[i]
@@ -555,7 +575,7 @@ function animate() {
             
                 setTimeout(() => {
                     ghost.scared = false
-                }, 3000)
+                }, 4000)
             })
         }
     }
@@ -598,17 +618,6 @@ function animate() {
 
     ghosts.forEach(ghost => {
         ghost.update()
-
-        //removes 
-        if (Math.hypot(
-            ghost.position.x - player.position.x,
-            ghost.position.y - player.position.y
-        ) <
-            ghost.radius + player.radius
-        ) {
-            cancelAnimationFrame(animationId)
-            console.log('You lose.')
-        }
 
         // Allows ghosts to recognize boundaries 
         const collisions = []
